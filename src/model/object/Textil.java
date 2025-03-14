@@ -1,7 +1,7 @@
 package model.object;
 
 public class Textil extends Producte {
-    private String composicio;
+    private final String composicio;
 
     public Textil(String nom, float preu, int codiDeBarres, String composicio) {
         super(nom, preu, codiDeBarres);
@@ -12,8 +12,4 @@ public class Textil extends Producte {
         return composicio;
     }
 
-    @Override
-    public double calcularPreu() {
-        return 0;
-    }
 }

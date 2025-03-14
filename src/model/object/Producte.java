@@ -1,9 +1,9 @@
 package model.object;
 
 public abstract class Producte {
-    private String nom;
-    private float preu;
-    private int codiDeBarres;
+    private final String nom;
+    private final float preu;
+    private final int codiDeBarres;
 
     public Producte(String nom, float preu, int codiDeBarres) {
         this.nom = nom;
@@ -12,10 +12,8 @@ public abstract class Producte {
     }
 
     public String getNom() { return nom; }
-    public int getCodiDeBarres() { return codiDeBarres; }
     public double getPreuBase() { return preu; }
-
-    public abstract double calcularPreu();
+    public int getCodiDeBarres() { return codiDeBarres; }
 
     @Override
     public String toString() {
