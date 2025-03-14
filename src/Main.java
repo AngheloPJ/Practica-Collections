@@ -2,6 +2,7 @@ import model.Model;
 import utils.LoggerUtil;
 import view.Vista;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -13,19 +14,13 @@ public class Main {
         try {
             int opcio;
             do {
-                Vista.mostrarMissatge("BENVINGUT AL SAPAMERCAT");
-                LoggerUtil.title("INICI DEL PROJECTE");
-
-                Vista.mostrarMissatge("1) Gestionar Magatzem i Compres");
-                Vista.mostrarMissatge("2) Introduir producte");
-                Vista.mostrarMissatge("3) Passar per caixa");
-                Vista.mostrarMissatge("4) Mostrar carret de compra");
-                Vista.mostrarMissatge("0) Acabar");
-
-                Vista.mostrarMissatge("Escull una opció (0-3): ");
+                enviarMenuPrincipal();
                 opcio = opcions(scan.nextInt());
                 scan.nextLine();
             } while (opcio != 0);
+        } catch (InputMismatchException e) {
+            Vista.mostrarMissatge("L'opció ha de ser un número!");
+            e.printStackTrace();
         } catch (Exception e) { /* Canviar exception por valores más adecuados */
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -55,6 +50,7 @@ public class Main {
                 break;
             case 3:
                 LoggerUtil.title("SAPAMERCAT");
+                Vista.mostrarMissatge(Model.passarPerCaixa());
                 break;
             case 4:
                 LoggerUtil.title("CARRET DE COMPRA");
@@ -83,16 +79,7 @@ public class Main {
                 Vista.mostrarMissatge("AUN NO EXISTE!");
                 break;
             case 0:
-                Vista.mostrarMissatge("BENVINGUT AL SAPAMERCAT");
-                LoggerUtil.title("INICI DEL PROJECTE");
-
-                Vista.mostrarMissatge("1) Gestionar Magatzem i Compres");
-                Vista.mostrarMissatge("2) Introduir producte");
-                Vista.mostrarMissatge("3) Passar per caixa");
-                Vista.mostrarMissatge("4) Mostrar carret de compra");
-                Vista.mostrarMissatge("0) Acabar");
-
-                Vista.mostrarMissatge("Escull una opció (0-4): ");
+                enviarMenuPrincipal();
                 opcions(scan.nextInt());
                 scan.nextLine();
             default:
@@ -107,22 +94,13 @@ public class Main {
                 demanarDadesAlimentacio();
                 break;
             case 2:
-                Vista.mostrarMissatge("AUN NO EXISTE!");
+                demanarDadesTextil();
                 break;
             case 3:
-                Vista.mostrarMissatge("AUN NO EXISTE!");
+                demanarDadesElectronica();
                 break;
             case 0:
-                Vista.mostrarMissatge("BENVINGUT AL SAPAMERCAT");
-                LoggerUtil.title("INICI DEL PROJECTE");
-
-                Vista.mostrarMissatge("1) Gestionar Magatzem i Compres");
-                Vista.mostrarMissatge("2) Introduir producte");
-                Vista.mostrarMissatge("3) Passar per caixa");
-                Vista.mostrarMissatge("4) Mostrar carret de compra");
-                Vista.mostrarMissatge("0) Acabar");
-
-                Vista.mostrarMissatge("Escull una opció (0-4): ");
+                enviarMenuPrincipal();
                 opcions(scan.nextInt());
                 scan.nextLine();
             default:
@@ -150,7 +128,7 @@ public class Main {
     }
 
     /* Textil */
-    private static void demanarDadesTextil() {
+    private static void demanarDadesTextil() throws Exception {
         Vista.mostrarMissatge("Afegir téxtil");
         Vista.mostrarMissatge("Nom del producte: ");
         String nom = scan.next();
@@ -160,31 +138,41 @@ public class Main {
         scan.nextLine();
         Vista.mostrarMissatge("Composició: ");
         String composicio = scan.next();
-        scan.nextLine();
         Vista.mostrarMissatge("Codi de barres: ");
         int codiBarres = scan.nextInt();
-        scan.nextLine();
 
-        /* Mandar a caixa */
+        Model.afegirTextil(nom, preu, composicio, codiBarres);
     }
 
     /* Electronica */
-    private static void demanarDadesElectronica() {
+    private static void demanarDadesElectronica() throws Exception {
         Vista.mostrarMissatge("Afegir electrònica");
+        scan.nextLine();
         Vista.mostrarMissatge("Nom del producte: ");
-        String nom = scan.next();
-        scan.nextLine(); // Consume the remaining newline
+        String nom = scan.nextLine();
         Vista.mostrarMissatge("Preu: ");
         float preu = scan.nextFloat();
         scan.nextLine();
         Vista.mostrarMissatge("Garantia (dies): ");
-        int galarantia = scan.nextInt();
-        scan.nextLine();
+        int garantia = scan.nextInt();
         Vista.mostrarMissatge("Codi de barres: ");
         int codiBarres = scan.nextInt();
-        scan.nextLine();
 
-        /* Mandar a caixa */
+        Model.afegirElectronica(nom, preu, garantia, codiBarres);
+    }
+
+    /* Enviar el menú incial */
+    private static void enviarMenuPrincipal() {
+        Vista.mostrarMissatge("BENVINGUT AL SAPAMERCAT");
+        LoggerUtil.title("INICI DEL PROJECTE");
+
+        Vista.mostrarMissatge("1) Gestionar Magatzem i Compres");
+        Vista.mostrarMissatge("2) Introduir producte");
+        Vista.mostrarMissatge("3) Passar per caixa");
+        Vista.mostrarMissatge("4) Mostrar carret de compra");
+        Vista.mostrarMissatge("0) Acabar");
+
+        Vista.mostrarMissatge("Escull una opció (0-4): ");
     }
 
 }

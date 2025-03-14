@@ -5,7 +5,9 @@ import model.object.Electronica;
 import model.object.Producte;
 import model.object.Textil;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Model {
@@ -26,7 +28,7 @@ public class Model {
         }
     }
 
-    public static void afegirTextil(String nom, float preu, int codiBarres, String composicio) throws Exception {
+    public static void afegirTextil(String nom, float preu, String composicio, int codiBarres) throws Exception {
         //if (carrito.size() >= 100) throw new LimitProductesException("El carret està ple!");
         Textil producte = new Textil(nom, preu, codiBarres, composicio);
         if (carrito.containsKey(codiBarres) && carrito.get(codiBarres).getPreuBase() == producte.getPreuBase())
@@ -48,19 +50,38 @@ public class Model {
         }
     }
 
-    public static void passarPerCaixa() {
+    public static String passarPerCaixa() {
         if (carrito.isEmpty()) {
             System.out.println("El carro està buit. No hi ha productes per processar.");
-            return;
+            return null;
         }
 
         String tickets = "";
-        tickets += "Tiquet de compra - SAPAMERCAT\n";
         tickets += "-----------------------------------\n";
-        tickets += "Data: " + LocalDate.now();
+        tickets += "Data: " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "\n";
         tickets += "-----------------------------------\n";
 
+        double preuFinal = 0.0;
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+
+        for (Map.Entry<Integer, Producte> entry : carrito.entrySet()) {
+            int codiBarres = entry.getKey();
+            Producte producte = entry.getValue();
+            int quantitat = quantitats.get(codiBarres);
+
+            double preuUnitari = producte.getPreuBase();
+            double preuQuantitat = preuUnitari * quantitat;
+
+            preuFinal += preuQuantitat;
+            tickets += producte.getNom() + "   " + quantitat + "   " + decimalFormat.format(preuUnitari) + "€   " + decimalFormat.format(preuQuantitat) + "€\n";
+        }
+
+        tickets += "-----------------------------------\n";
+        tickets += "Total: " + decimalFormat.format(preuFinal) + "€\n";
+
         carrito.clear();
+        quantitats.clear();
+        return tickets;
     }
 
     public static Map<Integer, Producte> getCarrito() {

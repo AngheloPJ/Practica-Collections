@@ -15,14 +15,15 @@ public class Vista {
 
     public static void mostrarCarrito(Map<Integer, Producte> carrito, Map<Integer, Integer> quantitats) {
         if (carrito.isEmpty()) {
-            System.out.println("El carro està buit.");
+            System.out.println("No hi ha contingut al carret!");
+            return;
         }
 
         mostrarMissatge("Carret:");
-        for (Map.Entry<Integer, Producte> entry : carrito.entrySet()) {
-            Producte producte = entry.getValue();
-            int quantitat = quantitats.get(entry.getKey());
+        carrito.forEach((codiBarres, producte) -> {
+            int quantitat = quantitats.get(codiBarres);
             mostrarMissatge(producte.getNom() + " -> " + quantitat);
-        }
+        });
+        mostrarMissatge("");
     }
 }
