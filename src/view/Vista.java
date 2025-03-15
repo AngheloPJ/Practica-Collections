@@ -2,6 +2,7 @@ package view;
 
 import model.object.Producte;
 
+import java.util.List;
 import java.util.Map;
 
 public class Vista {
@@ -9,21 +10,23 @@ public class Vista {
         System.out.println(message);
     }
 
-    public static void mostrarCaixa() {
-
-    }
-
-    public static void mostrarCarrito(Map<Integer, Producte> carrito, Map<Integer, Integer> quantitats) {
+    public static void mostrarCarrito(List<Producte> carrito, Map<Integer, Integer> quantitats) {
         if (carrito.isEmpty()) {
             System.out.println("No hi ha contingut al carret!");
             return;
         }
 
         mostrarMissatge("Carret:");
-        carrito.forEach((codiBarres, producte) -> {
-            int quantitat = quantitats.get(codiBarres);
-            mostrarMissatge(producte.getNom() + " -> " + quantitat);
+        quantitats.forEach((codiBarres, quantitat) -> {
+            Producte producte = carrito.stream().filter(p -> p.getCodiDeBarres() == codiBarres)
+                    .findFirst()
+                    .orElse(null);
+
+            if (producte != null) {
+                System.out.println(producte.getNom() + " -> " + quantitat);
+            }
         });
+
         mostrarMissatge("");
     }
 }

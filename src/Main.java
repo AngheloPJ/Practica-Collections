@@ -54,7 +54,7 @@ public class Main {
                 break;
             case 4:
                 LoggerUtil.title("CARRET DE COMPRA");
-                Vista.mostrarCarrito(Model.getCarrito(), Model.getQuantitat());
+                Vista.mostrarCarrito(Model.getCarrito(), Model.calcularQuantitats());
                 break;
             case 0:
                 Vista.mostrarMissatge("Has finalitzat el menú del supermercat.");
