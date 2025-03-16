@@ -18,7 +18,16 @@ public class Alimentacio extends Producte implements Comparable<Alimentacio> {
 }
 ```
 - 1.2. Tiquets de compra
-  - $${\color{red}PENDENT}$$
+  - Per poder <ins>mostrar</ins> els $${\color{lightgray}tickets}$$ he fet servir una colecció diferent.
+```java
+    private static final List<String> tickets = new ArrayList<>(); // Tickets
+    tickets.add(ticket); // Aixó ho faig servir en "Passar per caixa"
+
+    public static List<String> getTickets() {
+        return tickets;
+    }
+    
+```
 - 1.3. Composició tèxtil<br/>
   - Per poder <ins>ordenar</ins> segons la $${\color{fuchsia}Composició \space tèxtil}$$ he fet servir el $${\color{aqua}CompareTo<>}$$ i $${\color{lightskyblue}compareTo()}$$ també:
 ```java
