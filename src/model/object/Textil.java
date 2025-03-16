@@ -8,6 +8,10 @@ public class Textil extends Producte implements Comparable<Textil> {
         this.composicio = composicio;
     }
 
+    public String getComposicio() {
+        return composicio;
+    }
+
     @Override
     public int compareTo(Textil textil) {
         return this.composicio.compareTo(textil.composicio);

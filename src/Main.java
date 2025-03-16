@@ -1,4 +1,8 @@
 import model.Model;
+import model.exceptions.DataCaducitatException;
+import model.exceptions.LimitCaractersException;
+import model.exceptions.LimitProductesException;
+import model.exceptions.NegatiuException;
 import utils.LoggerUtil;
 import view.Vista;
 
@@ -21,10 +25,9 @@ public class Main {
         } catch (InputMismatchException e) {
             Vista.mostrarMissatge("L'opció ha de ser un número!");
             e.printStackTrace();
-        } catch (Exception e) { /* Canviar exception por valores más adecuados */
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
-            System.out.println(e); // ToString
         }
     }
 
@@ -70,13 +73,15 @@ public class Main {
     private static void subOpcionsMagatzem (int opcio) throws Exception {
         switch (opcio) {
             case 1:
-                Vista.mostrarMissatge("AUN NO EXISTE!");
+                Model.ordenarPerCaducitat();
+                Vista.mostrarAlimentsOrdenats(Model.getCarrito());
                 break;
             case 2:
-                Vista.mostrarMissatge("AUN NO EXISTE!");
+                Vista.mostrarTickets(Model.getTickets());
                 break;
             case 3:
-                Vista.mostrarMissatge("AUN NO EXISTE!");
+                Model.ordenarPorTextil();
+                Vista.mostrarTextilsOrdenats(Model.getCarrito());
                 break;
             case 0:
                 enviarMenuPrincipal();
@@ -110,13 +115,15 @@ public class Main {
     }
 
     /* Alimentacio */
-    private static void demanarDadesAlimentacio() throws Exception {
+    private static void demanarDadesAlimentacio() throws LimitProductesException, LimitCaractersException, NegatiuException, DataCaducitatException {
         Vista.mostrarMissatge("Afegir aliment");
         Vista.mostrarMissatge("Nom del producte: ");
         scan.nextLine();
         String nom = scan.nextLine();
+        if (nom.length() > 20) throw new LimitCaractersException("El nom del producte ha ser inferior a 20 caràcters.");
         Vista.mostrarMissatge("Preu: ");
         float preu = scan.nextFloat();
+        if (preu < 0) throw new NegatiuException("El preu no pot ser negatiu!");
         scan.nextLine();
         Vista.mostrarMissatge("Codi de barres: ");
         int codiBarres = scan.nextInt();
@@ -128,13 +135,15 @@ public class Main {
     }
 
     /* Textil */
-    private static void demanarDadesTextil() throws Exception {
+    private static void demanarDadesTextil() throws LimitProductesException, LimitCaractersException, NegatiuException {
         Vista.mostrarMissatge("Afegir téxtil");
         Vista.mostrarMissatge("Nom del producte: ");
         String nom = scan.next();
+        if (nom.length() > 20) throw new LimitCaractersException("El nom del producte ha ser inferior a 20 caràcters.");
         scan.nextLine(); // Consume the remaining newline
         Vista.mostrarMissatge("Preu: ");
         float preu = scan.nextFloat();
+        if (preu < 0) throw new NegatiuException("El preu no pot ser negatiu!");
         scan.nextLine();
         Vista.mostrarMissatge("Composició: ");
         String composicio = scan.next();
@@ -145,13 +154,15 @@ public class Main {
     }
 
     /* Electronica */
-    private static void demanarDadesElectronica() throws Exception {
+    private static void demanarDadesElectronica() throws LimitProductesException, LimitCaractersException, NegatiuException {
         Vista.mostrarMissatge("Afegir electrònica");
         scan.nextLine();
         Vista.mostrarMissatge("Nom del producte: ");
         String nom = scan.nextLine();
+        if (nom.length() > 20) throw new LimitCaractersException("El nom del producte ha ser inferior a 20 caràcters.");
         Vista.mostrarMissatge("Preu: ");
         float preu = scan.nextFloat();
+        if (preu < 0) throw new NegatiuException("El preu no pot ser negatiu!");
         scan.nextLine();
         Vista.mostrarMissatge("Garantia (dies): ");
         int garantia = scan.nextInt();

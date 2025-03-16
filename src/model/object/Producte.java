@@ -15,8 +15,6 @@ public abstract class Producte {
     public double getPreuBase() { return preu; }
     public int getCodiDeBarres() { return codiDeBarres; }
 
-
-
     @Override
     public String toString() {
         return "Producte{" +

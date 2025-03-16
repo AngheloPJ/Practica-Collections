@@ -1,5 +1,9 @@
 package model;
 
+import model.exceptions.DataCaducitatException;
+import model.exceptions.LimitCaractersException;
+import model.exceptions.LimitProductesException;
+import model.exceptions.NegatiuException;
 import model.object.Alimentacio;
 import model.object.Electronica;
 import model.object.Producte;
@@ -14,20 +18,20 @@ public class Model {
     private static final List<Producte> carrito = new ArrayList<>(); // Carret
     private static final List<String> tickets = new ArrayList<>(); // Tickets
 
-    public static void afegirProducte(String nom, float preu, int codiBarres, String dataCaducitat) throws Exception {
-        //if (carrito.size() >= 100) throw new LimitProductesException("El carret està ple!");
+    public static void afegirProducte(String nom, float preu, int codiBarres, String dataCaducitat) throws LimitProductesException, LimitCaractersException, NegatiuException, DataCaducitatException {
+        if (carrito.size() >= 100) throw new LimitProductesException("El carret està ple!");
         Alimentacio producte = new Alimentacio(nom, preu, codiBarres, dataCaducitat);
         carrito.add(producte);
     }
 
-    public static void afegirTextil(String nom, float preu, String composicio, int codiBarres) throws Exception {
-        //if (carrito.size() >= 100) throw new LimitProductesException("El carret està ple!");
+    public static void afegirTextil(String nom, float preu, String composicio, int codiBarres) throws LimitProductesException, LimitCaractersException, NegatiuException {
+        if (carrito.size() >= 100) throw new LimitProductesException("El carret està ple!");
         Textil producte = new Textil(nom, preu, codiBarres, composicio);
         carrito.add(producte);
     }
 
-    public static void afegirElectronica(String nom, float preu, int codiBarres, int diesGarantia) throws Exception {
-        //if (carrito.size() >= 100) throw new LimitProductesException("El carret està ple!");
+    public static void afegirElectronica(String nom, float preu, int codiBarres, int diesGarantia) throws LimitProductesException, LimitCaractersException, NegatiuException {
+        if (carrito.size() >= 100) throw new LimitProductesException("El carret està ple!");
         Electronica producte = new Electronica(nom, preu, codiBarres, diesGarantia);
         carrito.add(producte);
     }
@@ -52,10 +56,7 @@ public class Model {
             int codiBarres = entry.getKey();
             int quantitat = entry.getValue();
 
-            Producte producte = carrito.stream()
-                    .filter(p -> p.getCodiDeBarres() == codiBarres)
-                    .findFirst()
-                    .orElse(null);
+            Producte producte = cercarCodiBarres(codiBarres);
 
             if (producte != null) {
                 double preuUnitari = producte.getPreuBase();
@@ -76,17 +77,29 @@ public class Model {
         return ticket;
     }
 
-    public static List<String> ordenarPerTextil() {
-        Collections.sort(tickets);
-        return tickets;
+    public static void ordenarPerCaducitat() {
+        carrito.sort((p1, p2) -> {
+            if (p1 instanceof Alimentacio && p2 instanceof Alimentacio) {
+                return ((Alimentacio) p1).compareTo((Alimentacio) p2);
+            }
+            return 0;
+        });
     }
 
-    public static String cercarTextilPerCodi(int codiDeBarres) {
+    public static void ordenarPorTextil() {
+        carrito.sort((p1, p2) -> {
+            if (p1 instanceof Textil && p2 instanceof Textil) {
+                return ((Textil) p1).compareTo((Textil) p2);
+            }
+            return 0;
+        });
+    }
+
+    public static Producte cercarCodiBarres(int codiDeBarres) {
         return carrito.stream()
-                .filter(producte -> producte.getCodiDeBarres() == codiDeBarres)
-                .map(Producte::getNom)
+                .filter(p -> p.getCodiDeBarres() == codiDeBarres)
                 .findFirst()
-                .orElse("No s'ha trobat cap producte amb aquest codi de barres");
+                .orElse(null);
     }
 
     public static Map<Integer, Integer> calcularQuantitats() {
@@ -97,7 +110,6 @@ public class Model {
         }
         return quantitats;
     }
-
 
     public static List<Producte> getCarrito() {
         return carrito;
